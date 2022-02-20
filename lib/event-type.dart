@@ -1,9 +1,24 @@
+import 'package:eventtask/create-event.dart';
 import 'package:eventtask/styles.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 
 class EventType extends StatelessWidget {
+  static String id = 'event_type';
+
+  TextEditingController eventType = TextEditingController();
+  TextEditingController eventPrice = TextEditingController();
+  TextEditingController eventLocation = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    final eventInfo = ModalRoute.of(context)!.settings.arguments as Map;
+    String title = eventInfo['title'];
+    String description = eventInfo['description'];
+    String startDateTime = eventInfo['startDateTime'];
+    String endDateTime = eventInfo['endDateTime'];
+    String image = eventInfo['image'];
+
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -90,7 +105,36 @@ class EventType extends StatelessWidget {
                     ],
                   ),
                 ),
-                15),
+                15, onTap: () async {
+              print(startDateTime);
+
+              if (title.isNotEmpty &&
+                  description.isNotEmpty &&
+                  startDateTime.isNotEmpty &&
+                  endDateTime.isNotEmpty) {
+                String url =
+                    'http://104.155.187.128:9999/api/upload/v1/event/updateEvent';
+                Map<String, String> headers = {
+                  "Content-Type": "application/json"
+                };
+                String json =
+                    '{"id":1234, "creator": 3423, "type" : 1, "currency_type" :1,"location":"India","file":"${image}","title":"${title}","description":"${description}","start_at":"${startDateTime}", "end_at":"${endDateTime}"}';
+                var response = await post(
+                    Uri.parse(url),
+                    headers: headers,
+                    body: json);
+                print(json);
+                if(response.body != null || response.statusCode == 200){
+                  print(response.body);
+                  Navigator.pushReplacementNamed(context, CreateEvent.id);
+                }else{
+                  print("Error creating event");
+                }
+
+              } else {
+                print("Error creating the event");
+              }
+            }),
           ],
         ),
       ),

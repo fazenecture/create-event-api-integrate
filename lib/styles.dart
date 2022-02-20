@@ -1,4 +1,9 @@
+import 'dart:io';
+import 'package:intl/intl.dart';
+
+import 'package:eventtask/event-type.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 Widget heading(BuildContext context,
     {String text = "",
@@ -128,10 +133,22 @@ Color hexColor(String color) {
 Widget navigate(
     {required BuildContext context,
     required Widget page,
+    required TextEditingController title,
+    required TextEditingController desc,
+      required TextEditingController image,
+    required TextEditingController startDateTime,
+    required TextEditingController endDateTime,
     required Widget child}) {
   return GestureDetector(
     onTap: () {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+      Navigator.pushNamed(context, EventType.id, arguments: {
+        "title": title.text,
+        "description": desc.text,
+        "startDateTime": startDateTime.text,
+        "endDateTime": endDateTime.text,
+        "image":image.text
+      });
+      // Navigator.push(context, MaterialPageRoute(builder: (context) => page));
     },
     child: child,
   );
@@ -148,6 +165,31 @@ Widget aimage(String name, {double scale = 1, Color? color}) {
     scale: scale,
     color: color,
   );
+}
+
+Future<DateTime?> dateTimePicker(
+    {required BuildContext context,
+    required TextEditingController startDateTime}) {
+  DateTime dateTime = DateTime.now();
+
+  return DatePicker.showDateTimePicker(context,
+      showTitleActions: true,
+      minTime: DateTime.now(),
+      maxTime: DateTime(2022, 12, 31), onChanged: (date) {
+    print('change $date');
+  }, onConfirm: (date) {
+    print('confirm $date');
+    dateTime = date;
+    if (date != null) {
+      String formattedDate = DateFormat('dd-MM-yyyy h:mm').format(date);
+      print(formattedDate);
+      startDateTime.text = formattedDate;
+      print(startDateTime);
+    } else {
+      print("Date is not selected");
+    }
+    print("done");
+  }, currentTime: DateTime.now(), locale: LocaleType.en);
 }
 
 // var mq = MediaQuery.of(context).size;
