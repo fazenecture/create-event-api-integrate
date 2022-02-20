@@ -1,4 +1,4 @@
-package com.example.create_event_api_integrate
+package com.example.eventtask
 
 import io.flutter.embedding.android.FlutterActivity
 

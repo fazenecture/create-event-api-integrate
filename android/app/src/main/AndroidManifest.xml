@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.create_event_api_integrate">
+    package="com.example.eventtask">
    <application
-        android:label="create_event_api_integrate"
+        android:label="eventtask"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
